@@ -19,7 +19,7 @@ function startListening(callback) {
 }
 
 // Example usage in a React component:
-import React, { useState } from "react";
+import { useState } from "react";
 
 const SpeechToText = () => {
   const [transcript, setTranscript] = useState("");

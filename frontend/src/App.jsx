@@ -1,14 +1,11 @@
-import "./App.css";
-import SpeechToText from "./SpeechToText";
-import TextToSpeech from "./TexttoSpeech";
+import Home from "./pages/Home";
 
-function App() {
+const App = () => {
   return (
-    <>
-      <SpeechToText />
-      <TextToSpeech />
-    </>
+    <div>
+      <Home />
+    </div>
   );
-}
+};
 
 export default App;
