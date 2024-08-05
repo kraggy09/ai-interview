@@ -114,7 +114,7 @@ const Category = ({ open, setOpen, selected, setSelected }) => {
 Category.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
-  selected: PropTypes.string.isRequired,
+  selected: PropTypes.string,
   setSelected: PropTypes.func.isRequired,
 };
 

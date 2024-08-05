@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 const Singup = () => {
+  const navigate = useNavigate();
   return (
     <main className="flex md:flex-row flex-col-reverse">
       <section className="min-w-[50vw] bg-custom-white flex py-16 flex-col gap-y-6 items-start pl-6 pr-6 lg:pr-36 justify-center">
@@ -36,12 +39,15 @@ const Singup = () => {
       </section>
       <section className="flex items-center justify-center min-h-[100vh]  min-w-[50vw] gap-y-8 flex-col">
         <img
+          onClick={() => {
+            navigate("/");
+          }}
           src="https://d2b1cooxpkirg1.cloudfront.net/publicAssets/intervue.svg"
-          className="h-8"
+          className="h-8 hover:cursor-pointer"
           alt="logo"
         />
-        <h3 className="text-2xl font-bold">Singup as Candidate</h3>
-        <button className="border min-w-[350px] lg:min-w-[400px] flex items-center justify-center px-3 py-2 gap-x-6 border-sky-800 rounded-lg">
+        <h3 className="text-2xl font-bold">Singup as Candi  date</h3>
+        <button className="border hover:scale-105 duration-200 ease-linear min-w-[350px] lg:min-w-[400px] flex items-center justify-center px-3 py-2 gap-x-6 border-sky-800 rounded-lg">
           <i className="GoogleLoginBtn__StyledGoogleIcon-sc-1a6c06f-0 kADkWx">
             <svg viewBox="0 0 512 512" width="1em" fill="currentColor">
               <path
@@ -86,11 +92,16 @@ const Singup = () => {
             className="px-3 py-2 text-lg border border-gray-400 rounded-lg"
           />
 
-          <button className="bg-black text-white py-2 rounded-lg">
+          <button className="bg-black hover:scale-105 duration-200 ease-linear text-white py-2 rounded-lg">
             Singup
           </button>
         </form>
-        <button className="underline hover:text-blue-700">
+        <button
+          onClick={() => {
+            navigate("/login");
+          }}
+          className="underline hover:text-blue-700"
+        >
           Already Member? Login here
         </button>
       </section>
