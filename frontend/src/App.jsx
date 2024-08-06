@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
-
+const Profile = lazy(() => import("./pages/Profile"));
 const App = () => {
   const data = useSelector((store) => store.auth);
   console.log("Auth", data);
@@ -18,6 +18,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </Suspense>
     </Router>
