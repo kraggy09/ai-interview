@@ -8,8 +8,11 @@ const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Profile = lazy(() => import("./pages/Profile"));
 const App = () => {
-  const data = useSelector((store) => store.auth);
-  console.log("Auth", data);
+  const auth = useSelector((store) => store.auth);
+  const interview = useSelector((store) => store.interview);
+
+  console.log("Auth", auth);
+  console.log("Interview", interview);
 
   return (
     <Router>

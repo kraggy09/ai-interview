@@ -3,11 +3,15 @@ import { FaAngleDown } from "react-icons/fa";
 import ProfileTab from "../components/ui/ProfileTab";
 import { useState } from "react";
 import Category from "../components/modal/Category";
+import { useSelector } from "react-redux";
+import RoleSelection from "../components/ui/RoleSelection";
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(null);
   const [modal, setModal] = useState(false);
+  const interview = useSelector((store) => store.interview);
+  console.log(interview);
   return (
     <main className="min-h-[100vh] ">
       {/* Navigation */}
@@ -90,12 +94,16 @@ const Profile = () => {
       </section>
 
       <ProfileTab setOpen={setOpen} />
-      <Category
-        setOpen={setOpen}
-        open={open}
-        selected={selected}
-        setSelected={setSelected}
-      />
+      {interview.role === null && (
+        <Category
+          setOpen={setOpen}
+          open={open}
+          selected={selected}
+          setSelected={setSelected}
+          interview={interview}
+        />
+      )}
+      {interview.role != null && <RoleSelection />}
     </main>
   );
 };
