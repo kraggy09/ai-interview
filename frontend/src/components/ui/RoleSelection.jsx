@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { experienceLevels, skills } from "../constant";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import {
@@ -29,16 +29,19 @@ const RoleSelection = () => {
         setSelectedRole(null);
       }
     }
-  }, [interview.role]);
+  }, [interview]);
 
-  const handleLanguageClick = (index) => {
-    if (selectedRole) {
-      const updatedLanguages = selectedRole.language.map((lang, i) =>
-        i === index ? { ...lang, selected: !lang.selected } : lang
-      );
-      setSelectedRole({ ...selectedRole, language: updatedLanguages });
-    }
-  };
+  const handleLanguageClick = useCallback(
+    (index) => {
+      if (selectedRole) {
+        const updatedLanguages = selectedRole.language.map((lang, i) =>
+          i === index ? { ...lang, selected: !lang.selected } : lang
+        );
+        setSelectedRole({ ...selectedRole, language: updatedLanguages });
+      }
+    },
+    [selectedRole]
+  );
 
   const handleContinueClick = () => {
     if (pageIndex == 0) {
@@ -127,7 +130,7 @@ const RoleSelection = () => {
         />
         <h2 className="text-xl font-bold ">Select Seniority</h2>
       </header>
-      <ul className="flex flex-col max-h-[75vh] overflow-y-scroll gap-y-6 my-6 justify-center">
+      <ul className="flex flex-col pt-16 max-h-[75vh] overflow-y-scroll gap-y-4 my-6 justify-center">
         {experienceLevels.map((e) => {
           return (
             <li
