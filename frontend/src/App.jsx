@@ -6,6 +6,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Profile = lazy(() => import("./pages/Profile"));
+const Interview = lazy(() => import("./pages/Interview"));
 const App = () => {
   const auth = useSelector((store) => store.auth);
   const interview = useSelector((store) => store.interview);
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/interview" element={<Interview />} />
         </Routes>
       </Suspense>
     </Router>

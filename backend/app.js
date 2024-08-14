@@ -1,10 +1,15 @@
 import express from "express";
+import path from "path";
+
 import dotenv from "dotenv";
+import interviewRoter from "./routes/Interview.js";
 
 const app = express();
 dotenv.config({
-  path: "../backend/config/config.env",
+  path: path.resolve("backend", "config", "config.env"),
 });
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 console.log(process.env.GEMINI_API_KEY);
 app.use(function (req, res, next) {
@@ -15,5 +20,7 @@ app.use(function (req, res, next) {
   );
   next();
 });
+
+app.use("/api/v1/interview", interviewRoter);
 
 export default app;

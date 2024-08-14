@@ -2,17 +2,38 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useCallback } from "react";
 import { experienceLevels, skills } from "../constant";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 import {
   clearInterviewDetails,
   setInterviewDetails,
 } from "../../store/interviewSlice";
+import axios from "axios";
 
 const RoleSelection = () => {
   const interview = useSelector((store) => store.interview);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [selectedRole, setSelectedRole] = useState(null);
+  const [data, setData] = useState(null);
   console.log(selectedRole);
+
+  async function fetchData(data) {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/interview/newInterview",
+        {
+          data,
+        }
+      );
+
+      // Process the response data
+      console.log(response.data);
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
 
   const [pageIndex, setPageIndex] = useState(0);
   const [lvl, setLvl] = useState(null);
@@ -59,12 +80,34 @@ const RoleSelection = () => {
         })
       );
       setPageIndex(2);
+      let data = {
+        role: interview.role,
+        level: lvl,
+        languages: selectedLanguages,
+      };
+      fetchData(data);
     }
   };
 
   const renderThirdPage = () => (
     <div className="min-h-[100vh] text-md font-semibold items-center justify-center flex ">
-      <h1 className="loader"></h1>
+      {!data ? (
+        <h1 className="loader"></h1>
+      ) : (
+        <div className="flex items-center justify-center flex-col gap-y-8">
+          <h1 className="text-xl">
+            Your Inteview is Ready for {selectedRole.role}
+          </h1>
+          <button
+            className="bg-black px-3 py-2 text-white rounded-md"
+            onClick={() => {
+              navigate("/interview", { state: data });
+            }}
+          >
+            Go to Interview
+          </button>
+        </div>
+      )}
     </div>
   );
 
