@@ -16,9 +16,11 @@ const currentInterviewSlice = createSlice({
       }
     },
     setAnswers: (state, action) => {
-      const { questionId, ans } = action.payload;
+      const { quest, ans } = action.payload;
+      console.log(action.payload);
+
       const updatedQuestions = state.questions.map((ques) =>
-        ques._id === questionId ? { ...ques, ans } : ques
+        ques.question === quest ? { ...ques, ans } : ques
       );
       state.questions = updatedQuestions;
     },

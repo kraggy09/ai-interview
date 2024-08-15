@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setQuestions } from "../store/currentInterview";
@@ -6,7 +6,7 @@ import { CurrentQuestion } from "../components/ui/CurrentQuestion";
 
 const Interview = () => {
   const location = useLocation();
-  const params = useParams();
+  // const params = useParams();
   const dispatch = useDispatch();
   const videoRef = useRef(null);
 
@@ -14,7 +14,7 @@ const Interview = () => {
   const data = location.state;
 
   // Logging the received data
-  console.log(data.data);
+  console.log(data?.data);
 
   useEffect(() => {
     // Function to start the camera stream
@@ -29,17 +29,17 @@ const Interview = () => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
-        dispatch(
-          setQuestions({
-            questions: data?.data,
-            totalQuestion: data?.data.length - 1,
-          })
-        );
       } catch (error) {
         console.error("Error accessing the camera:", error);
       }
     };
 
+    dispatch(
+      setQuestions({
+        questions: data?.data,
+        totalQuestion: data?.data.length - 1,
+      })
+    );
     startCamera();
 
     // Cleanup: Stop the camera stream when the component is unmounted
@@ -52,15 +52,15 @@ const Interview = () => {
   }, []);
 
   return (
-    <main className="flex flex-col lg:flex-row">
+    <main className="flex flex-col-reverse lg:flex-row">
       <section
-        className="min-w-[70vw] lg:min-h-[100vh]"
+        className="min-w-[70vw] lg:max-w-[70vw]  lg:min-h-[100vh]"
         aria-label="Interview Details"
       >
         <CurrentQuestion dispatch={dispatch} />
       </section>
       <section
-        className="grid lg:grid-cols-1 px-4 py-3 grid-cols-2 gap-6 max-h-[90vh] my-auto mr-6"
+        className="grid lg:grid-cols-1 px-4  grid-cols-2 gap-6 max-h-[90vh] my-auto"
         aria-label="Interview and Camera Feed"
       >
         <div
@@ -72,7 +72,7 @@ const Interview = () => {
           </span>
         </div>
         <div
-          className="min-w-[90%] lg:min-h-[45vh] flex bg-gray-200 py-5 rounded-lg items-center justify-center"
+          className="min-w-[90%]  flex bg-gray-200 py-5 rounded-lg items-center justify-center"
           aria-label="Camera Feed"
         >
           <video

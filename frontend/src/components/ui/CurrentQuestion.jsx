@@ -1,20 +1,41 @@
 import { useSelector } from "react-redux";
 import TextToSpeech from "../function/TexttoSpeech";
-import { getNextQuestion } from "../../store/currentInterview";
 import SpeechToText from "../function/SpeechToText";
 import { useState } from "react";
 
-export const CurrentQuestion = ({ dispatch }) => {
+export const CurrentQuestion = () => {
   const { questions, currentQuestion } = useSelector(
     (store) => store.currentInterview
   );
-  const [transcript, setTranscript] = useState([]);
+  const [startListening, setStartListening] = useState(false);
+  let currQues = questions[currentQuestion];
   return (
-    <div>
-      <TextToSpeech question={questions[currentQuestion]?.question} />
-      {questions[currentQuestion]?.question}
-      <button onClick={() => dispatch(getNextQuestion())}>Next</button>
-      <SpeechToText transcripts={transcript} setTranscripts={setTranscript} />
+    <div className="px-6 py-6 ">
+      <TextToSpeech
+        setStartListening={setStartListening}
+        question={currQues?.question}
+      />
+      <h1 className="font-bold">
+        {"Q" + (currentQuestion + 1) + ")  "}
+        {currQues?.question}?
+      </h1>
+      <div className="lg:mt-3 flex items-center justify-end lg:justify-start gap-x-6 capitalize font-semibold">
+        <span
+          className={` py-1  px-2 rounded-xl ${
+            currQues?.difficulty === "easy"
+              ? "bg-green-300 text-green-800"
+              : currQues?.difficulty === "medium"
+              ? "bg-yellow-200 text-yellow-600"
+              : "bg-red-300 text-red-800"
+          }`}
+        >
+          {currQues?.difficulty}
+        </span>
+        <span className="py-1 text-gray-600  px-2 rounded-xl bg-gray-200">
+          {currQues?.topic}
+        </span>
+      </div>
+      <SpeechToText startListening={startListening} />
     </div>
   );
 };
