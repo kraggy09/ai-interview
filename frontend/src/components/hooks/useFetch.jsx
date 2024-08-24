@@ -1,22 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
-const useFetch = (url, options = null) => {
+const useFetch = (url = null, options = null, autoFetch = true) => {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = useCallback(
+    async (fetchUrl = url, fetchOptions = options) => {
       setLoading(true);
       try {
         let response;
-        if (options && options.method === "POST") {
-          response = await axios.post(url, options.data, {
-            headers: options.headers,
+        if (fetchOptions && fetchOptions.method === "POST") {
+          response = await axios.post(fetchUrl, fetchOptions.data, {
+            headers: fetchOptions.headers,
           });
         } else {
-          response = await axios.get(url, { headers: options?.headers });
+          response = await axios.get(fetchUrl, {
+            headers: fetchOptions?.headers,
+          });
         }
         setData(response.data);
       } catch (err) {
@@ -24,12 +26,17 @@ const useFetch = (url, options = null) => {
       } finally {
         setLoading(false);
       }
-    };
+    },
+    [url, options]
+  );
 
-    fetchData();
-  }, [url, options]);
+  useEffect(() => {
+    if (autoFetch && url) {
+      fetchData();
+    }
+  }, [fetchData, autoFetch, url]);
 
-  return { data, loading, error };
+  return { data, loading, error, fetchData };
 };
 
 export default useFetch;

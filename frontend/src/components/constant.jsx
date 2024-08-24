@@ -249,3 +249,5 @@ export const experienceLevels = [
     range: "10+ yrs of experience",
   },
 ];
+
+export const apiUrl = "http://localhost:8000/api/v1/";

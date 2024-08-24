@@ -1,42 +1,24 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect, useCallback } from "react";
-import { experienceLevels, skills } from "../constant";
+import { apiUrl, experienceLevels, skills } from "../constant";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import {
   clearInterviewDetails,
   setInterviewDetails,
 } from "../../store/interviewSlice";
-import axios from "axios";
-
+import useFetch from "../hooks/useFetch";
 const RoleSelection = () => {
   const interview = useSelector((store) => store.interview);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [selectedRole, setSelectedRole] = useState(null);
-  const [data, setData] = useState(null);
-  console.log(selectedRole);
-
-  async function fetchData(data) {
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/interview/newInterview",
-        {
-          data,
-        }
-      );
-
-      // Process the response data
-      console.log(response.data);
-      setData(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-
-  const [pageIndex, setPageIndex] = useState(0);
   const [lvl, setLvl] = useState(null);
+  const [pageIndex, setPageIndex] = useState(0);
+
+  const { data, loading, error, fetchData } = useFetch(null, null, false); // Initialize with no URL
+
   useEffect(() => {
     if (interview && interview.role) {
       const role =
@@ -65,9 +47,9 @@ const RoleSelection = () => {
   );
 
   const handleContinueClick = () => {
-    if (pageIndex == 0) {
+    if (pageIndex === 0) {
       setPageIndex(1); // Move to the second page
-    } else if (pageIndex == 1) {
+    } else if (pageIndex === 1) {
       let selectedLanguages =
         selectedRole && selectedRole.language.filter((s) => s.selected);
       console.log(selectedLanguages);
@@ -80,23 +62,34 @@ const RoleSelection = () => {
         })
       );
       setPageIndex(2);
-      let data = {
+
+      const data = {
         role: interview.role,
         level: lvl,
         languages: selectedLanguages,
       };
-      fetchData(data);
+
+      // Use fetchData from useFetch hook
+      fetchData(apiUrl + "interview/newInterview", {
+        method: "POST",
+        data: data,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     }
   };
 
   const renderThirdPage = () => (
     <div className="min-h-[100vh] text-md font-semibold items-center justify-center flex ">
-      {!data ? (
+      {loading ? (
         <h1 className="loader"></h1>
+      ) : error ? (
+        <p>Error: {error}</p>
       ) : (
         <div className="flex items-center justify-center flex-col gap-y-8">
           <h1 className="text-xl">
-            Your Inteview is Ready for {selectedRole.role}
+            Your Interview is Ready for {selectedRole.role}
           </h1>
           <button
             className="bg-black px-3 py-2 text-white rounded-md"
