@@ -1,5 +1,5 @@
 import moment from "moment-timezone";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import getTime from "../config/getTime";
 
 const interviewSchema = mongoose.Schema({
@@ -40,3 +40,5 @@ const interviewSchema = mongoose.Schema({
     default: "Interviewing", // Set default to 'Interviewing' if desired
   },
 });
+
+export default mongoose.model("Interview", interviewSchema);

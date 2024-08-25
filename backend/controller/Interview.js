@@ -1,10 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { generatePrompt } from "../config/constant.js";
+import {
+  generateEvaluationPrompt,
+  generatePrompt,
+} from "../config/constant.js";
 
 export const generateInterview = async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
+  // console.log(req.body);
 
-  const { languages, role, level } = req.body.data;
+  const { languages, role, level } = req.body;
 
   const prompt = generatePrompt(languages, role, level);
 
@@ -28,5 +32,30 @@ export const generateInterview = async (req, res) => {
   } catch (error) {
     // Send an error response
     return res.status(500).json({ error: error.message, success: false });
+  }
+};
+
+export const evaluateInterview = async (req, res) => {
+  let { role, level, questions } = req.body;
+  // console.log(reqData);
+
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  try {
+    const prompt = generateEvaluationPrompt(questions, level, role);
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+    const responseText = await result.response.text();
+    console.log("Response text", responseText);
+
+    return res.json({
+      msg: "Sucessfully Evaluated the candidate",
+      success: true,
+      data: responseText,
+    });
+  } catch (error) {
+    console.log("Error", error.message);
   }
 };
