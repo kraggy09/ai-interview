@@ -32,3 +32,27 @@ export const login = async (req, res) => {
     return res.status(401).send("Invalid credentials");
   }
 };
+
+export const getUser = async (req, res) => {
+  console.log("Session Id", req.session.id);
+  req.sessionStore.get(req.session.id, (err, sessionData) => {
+    if (err) {
+      console.log(err, "error");
+      return res.status(404).json({ success: false, msg: "Unauthorised" });
+    }
+    console.log("Inside session store");
+    console.log(sessionData);
+    if (!sessionData) {
+      return res.status(401).json({
+        msg: "You are unauthorised",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      msg: "You are authorised",
+      success: true,
+      sessionData,
+    });
+  });
+};

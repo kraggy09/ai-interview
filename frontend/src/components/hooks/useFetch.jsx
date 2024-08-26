@@ -11,18 +11,24 @@ const useFetch = (url = null, options = null, autoFetch = true) => {
       setLoading(true);
       try {
         let response;
+        const config = {
+          headers: fetchOptions?.headers || {},
+          withCredentials: true,
+        };
+
         if (fetchOptions && fetchOptions.method === "POST") {
-          response = await axios.post(fetchUrl, fetchOptions.data, {
-            headers: fetchOptions.headers,
-          });
+          response = await axios.post(fetchUrl, fetchOptions.data, config);
         } else {
-          response = await axios.get(fetchUrl, {
-            headers: fetchOptions?.headers,
-          });
+          response = await axios.get(fetchUrl, config);
         }
+
         setData(response.data);
       } catch (err) {
-        setError(err.message);
+        console.log(err);
+
+        let error = err?.response?.data?.msg || err.message;
+
+        setError(error);
       } finally {
         setLoading(false);
       }

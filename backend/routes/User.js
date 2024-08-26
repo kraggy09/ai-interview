@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register } from "../controller/User.js";
+import { register, getUser } from "../controller/User.js";
 import {
   registerValidationRules,
   validate,
@@ -16,13 +16,18 @@ router.route("/login").post(passport.authenticate("local"), (req, res) => {
   });
 });
 
+router.route("/getUser").get(getUser);
+
 router.route("/checkAuth").get((req, res) => {
   console.log("Inside Checking of Auth");
-  console.log(req.session);
-  console.log(req.user);
 
-  return req.user
-    ? res.status(200).json({ success: true, msg: "You are authenticated" })
+  console.log(req.session);
+  const user = req.user;
+
+  return user
+    ? res
+        .status(200)
+        .json({ success: true, msg: "You are authenticated", user })
     : res.status(401).json({
         success: false,
         msg: "You are not authenticaated",

@@ -1,7 +1,60 @@
 import { useNavigate } from "react-router-dom";
+import useFetch from "../components/hooks/useFetch";
+import { useEffect, useReducer } from "react";
+import { apiUrl } from "../components/constant";
+import toast from "react-hot-toast";
 
 const Singup = () => {
+  const initialState = {
+    name: "",
+    email: "",
+    password: "",
+  };
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "UPDATE_NAME":
+        return { ...state, name: action.payload };
+      case "UPDATE_EMAIL":
+        return { ...state, email: action.payload };
+      case "UPDATE_PASS":
+        return { ...state, password: action.payload };
+      default:
+        return state;
+    }
+  };
+
+  const { fetchData, loading, data, error } = useFetch(null, null, false);
+
   const navigate = useNavigate();
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const options = {
+      method: "POST",
+      data: state,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    fetchData(apiUrl + "user/register", options);
+  };
+
+  const handleChange = (type, val) => {
+    type = "UPDATE_" + type.toUpperCase();
+    dispatch({ type: type, payload: val });
+  };
+
+  useEffect(() => {
+    if (data && data.success) {
+      navigate("/login");
+      toast.success("Singup success! Pls login");
+    } else if (error) {
+      console.log(error);
+      toast.error(error);
+    }
+  }, [data, navigate, error]);
   return (
     <main className="flex md:flex-row flex-col-reverse">
       <section className="min-w-[50vw] bg-custom-white flex py-16 flex-col gap-y-6 items-start pl-6 pr-6 lg:pr-36 justify-center">
@@ -46,7 +99,7 @@ const Singup = () => {
           className="h-8 hover:cursor-pointer"
           alt="logo"
         />
-        <h3 className="text-2xl font-bold">Singup as Candi  date</h3>
+        <h3 className="text-2xl font-bold">Singup as Candidate</h3>
         <button className="border hover:scale-105 duration-200 ease-linear min-w-[350px] lg:min-w-[400px] flex items-center justify-center px-3 py-2 gap-x-6 border-sky-800 rounded-lg">
           <i className="GoogleLoginBtn__StyledGoogleIcon-sc-1a6c06f-0 kADkWx">
             <svg viewBox="0 0 512 512" width="1em" fill="currentColor">
@@ -75,25 +128,42 @@ const Singup = () => {
           <p>OR</p>
           <div className="border-b-2  min-w-[150px]"></div>
         </div>
-        <form className="flex flex-col gap-y-4  lg:min-w-[400px] min-w-[350px]">
+        <form
+          onSubmit={(e) => {
+            handleSubmit(e);
+          }}
+          className="flex flex-col gap-y-4  lg:min-w-[400px] min-w-[350px]"
+        >
           <input
             type="text"
             placeholder="Name"
+            value={state.name}
+            onChange={(e) => {
+              handleChange("name", e.target.value);
+            }}
             className="px-3 py-2 text-lg border border-gray-400 rounded-lg"
           />
           <input
             type="text"
+            value={state.email}
             placeholder="Email"
+            onChange={(e) => {
+              handleChange("email", e.target.value);
+            }}
             className="px-3 py-2 text-lg border border-gray-400 rounded-lg"
           />
           <input
             type="password"
+            value={state.password}
             placeholder="Password"
+            onChange={(e) => {
+              handleChange("pass", e.target.value);
+            }}
             className="px-3 py-2 text-lg border border-gray-400 rounded-lg"
           />
 
           <button className="bg-black hover:scale-105 duration-200 ease-linear text-white py-2 rounded-lg">
-            Singup
+            {loading ? <span>Loading</span> : "Singup"}
           </button>
         </form>
         <button

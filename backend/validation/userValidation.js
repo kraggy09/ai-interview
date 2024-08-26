@@ -46,9 +46,12 @@ const registerValidationRules = () => {
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    // console.log("Returning this");
+    let arr = errors.array();
     return res.status(400).json({
       success: false,
-      errors: errors.array(),
+      errors: arr,
+      msg: arr[0]?.msg || "Some error",
     });
   }
   next();

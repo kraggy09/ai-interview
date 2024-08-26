@@ -5,7 +5,7 @@ import User from "../model/User.js";
 // Serialize user into the session
 passport.serializeUser((user, done) => {
   console.log("Serializing User");
-  console.log(user._id);
+  console.log(user);
 
   done(null, user); // Store the entire user object or just the ID in the session
 });
@@ -16,7 +16,7 @@ passport.deserializeUser(async (user, done) => {
   console.log(user);
 
   try {
-    const foundUser = await User.findById(user._id); // Retrieve user from database using the ID
+    const foundUser = await User.findById(user); // Retrieve user from database using the ID
     if (!foundUser) {
       return done(new Error("User not found")); // Handle user not found scenario
     }
@@ -37,7 +37,7 @@ export default passport.use(
       if (!(await user.comparePassword(password))) {
         throw new Error("Bad credentials");
       }
-      done(null, user);
+      done(null, user._id);
     } catch (error) {
       done(error, null);
     }

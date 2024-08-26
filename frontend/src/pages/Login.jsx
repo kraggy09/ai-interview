@@ -1,7 +1,57 @@
+import { useEffect, useReducer } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../components/constant";
+import useFetch from "../components/hooks/useFetch";
 
 const Login = () => {
+  const initialState = {
+    email: "",
+    password: "",
+  };
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "UPDATE_EMAIL":
+        return { ...state, email: action.payload };
+      case "UPDATE_PASS":
+        return { ...state, password: action.payload };
+      default:
+        return state;
+    }
+  };
+
+  const { fetchData, loading, data, error } = useFetch(null, null, false);
+
   const navigate = useNavigate();
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const options = {
+      method: "POST",
+      data: state,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    fetchData(apiUrl + "user/login", options);
+  };
+
+  const handleChange = (type, val) => {
+    type = "UPDATE_" + type.toUpperCase();
+    dispatch({ type: type, payload: val });
+  };
+
+  useEffect(() => {
+    if (data && data.success) {
+      navigate("/profile");
+      toast.success("Singup success! Pls login");
+    } else if (error) {
+      console.log(error);
+      toast.error(error);
+    }
+  }, [data, navigate, error]);
   return (
     <main className="flex md:flex-row flex-col-reverse">
       <section className="min-w-[50vw] bg-custom-white flex py-16 flex-col gap-y-6 items-start pl-6 pr-6 lg:pr-36 justify-center">
@@ -75,14 +125,27 @@ const Login = () => {
           <p>OR</p>
           <div className="border-b-2  min-w-[150px]"></div>
         </div>
-        <form className="flex flex-col gap-y-4  lg:min-w-[400px] min-w-[350px]">
+        <form
+          onSubmit={(e) => {
+            handleSubmit(e);
+          }}
+          className="flex flex-col gap-y-4  lg:min-w-[400px] min-w-[350px]"
+        >
           <input
             type="text"
+            value={state.email}
+            onChange={(e) => {
+              handleChange("email", e.target.value);
+            }}
             placeholder="Email"
             className="px-3 py-2 text-lg border border-gray-400 rounded-lg"
           />
           <input
             type="password"
+            value={state.password}
+            onChange={(e) => {
+              handleChange("pass", e.target.value);
+            }}
             placeholder="Password"
             className="px-3 py-2 text-lg border border-gray-400 rounded-lg"
           />
