@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import useFetch from "../components/hooks/useFetch";
 import { useEffect, useReducer } from "react";
 import { apiUrl } from "../components/constant";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const Singup = () => {
   const initialState = {
@@ -23,6 +24,8 @@ const Singup = () => {
         return state;
     }
   };
+
+  const auth = useSelector((store) => store.auth);
 
   const { fetchData, loading, data, error } = useFetch(null, null, false);
 
@@ -55,6 +58,10 @@ const Singup = () => {
       toast.error(error);
     }
   }, [data, navigate, error]);
+
+  if (auth.isAuthenticated) {
+    return <Navigate to={"/profile"} />;
+  }
   return (
     <main className="flex md:flex-row flex-col-reverse">
       <section className="min-w-[50vw] bg-custom-white flex py-16 flex-col gap-y-6 items-start pl-6 pr-6 lg:pr-36 justify-center">

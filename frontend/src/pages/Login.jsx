@@ -1,8 +1,10 @@
 import { useEffect, useReducer } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { apiUrl } from "../components/constant";
 import useFetch from "../components/hooks/useFetch";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../store/authSlice";
 
 const Login = () => {
   const initialState = {
@@ -21,10 +23,12 @@ const Login = () => {
     }
   };
 
-  const { fetchData, loading, data, error } = useFetch(null, null, false);
-
   const navigate = useNavigate();
+  const dispatchR = useDispatch();
   const [state, dispatch] = useReducer(reducer, initialState);
+  const auth = useSelector((store) => store.auth);
+
+  const { fetchData, loading, data, error } = useFetch(null, null, false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,12 +50,20 @@ const Login = () => {
   useEffect(() => {
     if (data && data.success) {
       navigate("/profile");
-      toast.success("Singup success! Pls login");
+      toast.success("Login success!");
+      console.log("Navigating ");
+      console.log(data, "Data");
+
+      dispatchR(login(data.user));
     } else if (error) {
       console.log(error);
       toast.error(error);
     }
-  }, [data, navigate, error]);
+  }, [data, error]);
+
+  if (auth.isAuthenticated) {
+    return <Navigate to={"/profile"} />;
+  }
   return (
     <main className="flex md:flex-row flex-col-reverse">
       <section className="min-w-[50vw] bg-custom-white flex py-16 flex-col gap-y-6 items-start pl-6 pr-6 lg:pr-36 justify-center">
@@ -151,7 +163,7 @@ const Login = () => {
           />
 
           <button className="bg-black hover:scale-105 duration-200 ease-linear text-white py-2 rounded-lg">
-            Login
+            {loading ? <span>Loading</span> : "Login"}
           </button>
         </form>
         <button

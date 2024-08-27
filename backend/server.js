@@ -1,5 +1,12 @@
 import app from "./app.js";
 
-app.listen(8000, () => {
+app.get("/hello", (req, res) => {
+  return res.status(200).json({
+    success: true,
+    msg: "Hello and welcome to the world of AI Intervue",
+  });
+});
+
+app.listen(3000, () => {
   console.log("App is running at 8000");
 });

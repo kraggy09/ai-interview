@@ -16,7 +16,7 @@ passport.deserializeUser(async (user, done) => {
   console.log(user);
 
   try {
-    const foundUser = await User.findById(user); // Retrieve user from database using the ID
+    const foundUser = await User.findById(user).select("-password"); // Retrieve user from database using the ID
     if (!foundUser) {
       return done(new Error("User not found")); // Handle user not found scenario
     }

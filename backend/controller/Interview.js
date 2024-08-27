@@ -24,6 +24,7 @@ export const generateInterview = async (req, res) => {
     let jsonResponse;
     try {
       jsonResponse = JSON.parse(cleanedResponseText);
+      console.log(jsonResponse);
     } catch (parseError) {
       console.error("Failed to parse response as JSON:", parseError);
     }

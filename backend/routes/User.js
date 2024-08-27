@@ -5,16 +5,22 @@ import {
   validate,
 } from "../validation/userValidation.js";
 import passport from "passport";
+import User from "../model/User.js";
 
 const router = Router();
 
 router.route("/register").post(registerValidationRules(), validate, register);
-router.route("/login").post(passport.authenticate("local"), (req, res) => {
-  return res.status(200).json({
-    msg: "Authenticated successfull",
-    success: true,
+router
+  .route("/login")
+  .post(passport.authenticate("local"), async (req, res) => {
+    const id = req.user;
+    const user = await User.findById(id).select("-password");
+    return res.status(200).json({
+      msg: "Authenticated successfull",
+      success: true,
+      user,
+    });
   });
-});
 
 router.route("/getUser").get(getUser);
 

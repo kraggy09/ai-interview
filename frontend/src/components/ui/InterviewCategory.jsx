@@ -1,11 +1,13 @@
-import { IoMdAddCircleOutline, IoMdSearch } from "react-icons/io";
+import { IoMdSearch } from "react-icons/io";
 import { FaArrowRight } from "react-icons/fa6";
 import { useState } from "react";
 import PropTypes from "prop-types";
 import Category from "../modal/Category";
+import { useNavigate } from "react-router-dom";
 
 const InterviewCategory = ({ open, setOpen }) => {
-  console.log(open);
+  // console.log(open);
+  const navigate = useNavigate();
 
   const interview = [
     {
@@ -38,7 +40,7 @@ const InterviewCategory = ({ open, setOpen }) => {
         <IoMdSearch size={25} />
         <p> Search Profile</p>
       </div>
-      <div className="grid my-6 grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-y-6 gap-x-6">
+      <div className="grid my-6 grid-cols-3 md:grid-cols-4  gap-y-6 gap-x-6">
         {interview.map((item) => {
           return (
             <div
@@ -55,18 +57,14 @@ const InterviewCategory = ({ open, setOpen }) => {
             </div>
           );
         })}
-        <div
-          onClick={() => {
-            setOpen(true);
-          }}
-          className="min-h-16 hover:cursor-pointer flex flex-col gap-y-2 items-center px-2 py-3 justify-center"
-        >
-          <IoMdAddCircleOutline className="text-5xl" />
-          <p className="">View All</p>
-        </div>
       </div>
       <div className="my-8">
-        <button className="bg-black flex items-center justify-center gap-x-3 hover:scale-110 transition-all duration-200 text-white px-8 rounded-xl py-2  text-xl">
+        <button
+          onClick={() => {
+            navigate("/profile");
+          }}
+          className="bg-black flex items-center justify-center gap-x-3 hover:scale-110 transition-all duration-200 text-white px-8 rounded-xl py-2  text-xl"
+        >
           Start Now!
           <FaArrowRight />
         </button>
