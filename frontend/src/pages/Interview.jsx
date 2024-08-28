@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setQuestions } from "../store/currentInterview";
@@ -6,7 +6,8 @@ import { CurrentQuestion } from "../components/ui/CurrentQuestion";
 
 const Interview = () => {
   const location = useLocation();
-  // const params = useParams();
+  const params = useParams();
+  const { id } = params;
   const dispatch = useDispatch();
   const videoRef = useRef(null);
 
@@ -38,6 +39,7 @@ const Interview = () => {
       setQuestions({
         questions: data?.data,
         totalQuestion: data?.data.length - 1,
+        id: id,
       })
     );
     startCamera();

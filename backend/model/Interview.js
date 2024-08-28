@@ -1,8 +1,9 @@
 import moment from "moment-timezone";
-import mongoose, { mongo } from "mongoose";
-import getTime from "../config/getTime";
+import mongoose, { Schema } from "mongoose";
+import getTime from "../config/getTime.js";
 
-const interviewSchema = mongoose.Schema(
+const IST = "Asia/Kolkata";
+const interviewSchema = new Schema(
   {
     date: {
       type: Date,
@@ -15,24 +16,15 @@ const interviewSchema = mongoose.Schema(
     overallGrade: {
       type: Number,
     },
-    reviews: {
-      type: String,
-    },
     role: {
       type: String,
       required: true,
     },
-    skills: [
-      {
-        name: String,
-        rating: Number,
-        review: String,
-      },
-    ],
-    improvements: {
-      type: "String",
+    skills: {
+      type: Object,
     },
-    strengths: {
+
+    comment: {
       type: String,
     },
     interviewStage: {
@@ -40,8 +32,12 @@ const interviewSchema = mongoose.Schema(
       enum: ["Interviewing", "Completed"],
       default: "Interviewing", // Set default to 'Interviewing' if desired
     },
+    improvements: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Interview", interviewSchema);
+const Interview = mongoose.model("Interview", interviewSchema);
+export default Interview;

@@ -10,18 +10,27 @@ import User from "../model/User.js";
 const router = Router();
 
 router.route("/register").post(registerValidationRules(), validate, register);
-router
-  .route("/login")
-  .post(passport.authenticate("local"), async (req, res) => {
-    const id = req.user;
-    const user = await User.findById(id).select("-password");
-    return res.status(200).json({
-      msg: "Authenticated successfull",
-      success: true,
-      user,
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", async (err, user, info) => {
+    if (err) {
+      return next(err); // Pass errors to the error-handling middleware
+    }
+    if (!user) {
+      return res.status(401).json({ msg: info.message, success: false }); // Handle errors with custom messages
+    }
+    req.logIn(user, async (err) => {
+      if (err) {
+        return next(err); // Pass errors to the error-handling middleware
+      }
+      const userData = await User.findById(user).select("-password");
+      return res.status(200).json({
+        msg: "Authenticated successfully",
+        success: true,
+        user: userData,
+      });
     });
-  });
-
+  })(req, res, next);
+});
 router.route("/getUser").get(getUser);
 
 router.route("/checkAuth").get((req, res) => {

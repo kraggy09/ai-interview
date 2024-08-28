@@ -250,4 +250,10 @@ export const experienceLevels = [
   },
 ];
 
+export function getInitials(name) {
+  return name
+    .split(" ") // Split the string by spaces to separate words
+    .map((word) => word[0].toUpperCase()) // Get the first letter of each word and convert it to uppercase
+    .join(""); // Join the letters together to form the initials
+}
 export const apiUrl = "http://localhost:8000/api/v1/";

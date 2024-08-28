@@ -17,9 +17,8 @@ const SpeechToText = ({ startListening }) => {
 
   const interview = useSelector((store) => store.interview);
 
-  const { questions, currentQuestion, totalQuestion } = useSelector(
-    (store) => store.currentInterview
-  );
+  const { questions, currentQuestion, totalQuestion, interviewId } =
+    useSelector((store) => store.currentInterview);
   const { transcript, resetTranscript, browserSupportsSpeechRecognition } =
     useSpeechRecognition();
 
@@ -116,6 +115,7 @@ const SpeechToText = ({ startListening }) => {
                     role: interview.role,
                     level: interview.level,
                     questions,
+                    interviewId,
                   };
                   fetchData(apiUrl + "interview/evaluateInterview", {
                     method: "POST",

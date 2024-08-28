@@ -54,7 +54,7 @@ const App = () => {
             }
           />
           <Route
-            path="/interview"
+            path="/interview/:id"
             element={
               <AuthWrapper>
                 <Interview />

@@ -5,16 +5,18 @@ import { useState } from "react";
 import Category from "../components/modal/Category";
 import { useSelector } from "react-redux";
 import RoleSelection from "../components/ui/RoleSelection";
+import { getInitials } from "../components/constant";
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [modal, setModal] = useState(false);
   const interview = useSelector((store) => store.interview);
+  const auth = useSelector((store) => store.auth);
+
   console.log(interview);
   return (
     <main className="min-h-[100vh] ">
-      {/* Navigation */}
       <nav
         className="bg-black flex items-center justify-between px-6 min-h-[8vh] text-white"
         aria-label="Main Navigation"
@@ -37,16 +39,16 @@ const Profile = () => {
             className="flex cursor-pointer relative items-center justify-center gap-x-2"
           >
             <div className="bg-green-200  text-green-700 font-bold rounded-full p-1 border-green-800 border-2">
-              KS
+              {getInitials(auth?.user?.name)}
             </div>
             <p className="flex items-center justify-center gap-x-1">
-              <span className="md:block hidden">Kaif Shaikh</span>
+              <span className="md:block hidden">{auth.user.name}</span>
               <FaAngleDown aria-label="Dropdown Menu" />
             </p>
             {modal && (
               <ul className="absolute  top-11 min-w-[150px] right-0 bg-gray-100 rounded-lg flex flex-col overflow-hidden   justify-center">
                 <li className="text-black h-full lg:hidden hover:bg-gray-200 py-2 min-w-full pl-2">
-                  Kaif Shaikh
+                  {auth.user.name}
                 </li>
                 <li className="border-b-2 border-gray-300 min-w-full "></li>
                 <li className="text-black h-full hover:bg-gray-200 py-2 min-w-full pl-2">
@@ -74,7 +76,7 @@ const Profile = () => {
               id="dashboard-heading"
               className="lg:text-2xl text-lg  font-bold"
             >
-              Hi, Kaif
+              Hi, {auth.user.name}
             </h1>
             <h3 className="lg:max-w-[700px] mt-2 text-sm lg:text-md">
               Welcome to your mock interviews dashboard. Here you will find the

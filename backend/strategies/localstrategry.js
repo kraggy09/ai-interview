@@ -4,17 +4,11 @@ import User from "../model/User.js";
 
 // Serialize user into the session
 passport.serializeUser((user, done) => {
-  console.log("Serializing User");
-  console.log(user);
-
   done(null, user); // Store the entire user object or just the ID in the session
 });
 
 // Deserialize user from the session
 passport.deserializeUser(async (user, done) => {
-  console.log("Deserializing User");
-  console.log(user);
-
   try {
     const foundUser = await User.findById(user).select("-password"); // Retrieve user from database using the ID
     if (!foundUser) {
@@ -27,19 +21,18 @@ passport.deserializeUser(async (user, done) => {
 });
 
 export default passport.use(
-  new Strategy({ usernameField: "email" }, async (username, password, done) => {
-    console.log(`Username: ${username}`);
+  new Strategy({ usernameField: "email" }, async (email, password, done) => {
     try {
-      const user = await User.findOne({ email: username });
+      const user = await User.findOne({ email });
       if (!user) {
-        throw new Error("User not found");
+        return done(null, false, { message: "User not found" });
       }
       if (!(await user.comparePassword(password))) {
-        throw new Error("Bad credentials");
+        return done(null, false, { message: "Bad credentials" });
       }
-      done(null, user._id);
+      return done(null, user._id);
     } catch (error) {
-      done(error, null);
+      return done(error);
     }
   })
 );

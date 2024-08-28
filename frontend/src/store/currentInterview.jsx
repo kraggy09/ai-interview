@@ -4,6 +4,7 @@ const initialState = {
   questions: [],
   currentQuestion: 0,
   totalQuestion: 15,
+  interviewId: "",
 };
 
 const currentInterviewSlice = createSlice({
@@ -25,9 +26,10 @@ const currentInterviewSlice = createSlice({
       state.questions = updatedQuestions;
     },
     setQuestions: (state, action) => {
-      const { questions, totalQuestion } = action.payload;
+      const { questions, totalQuestion, id } = action.payload;
       state.questions = questions;
       state.totalQuestion = totalQuestion;
+      state.interviewId = id;
     },
   },
 });

@@ -18,6 +18,7 @@ const RoleSelection = () => {
   const [pageIndex, setPageIndex] = useState(0);
 
   const { data, loading, error, fetchData } = useFetch(null, null, false); // Initialize with no URL
+  console.log(data);
 
   useEffect(() => {
     if (interview && interview.role) {
@@ -94,7 +95,7 @@ const RoleSelection = () => {
           <button
             className="bg-black px-3 py-2 text-white rounded-md"
             onClick={() => {
-              navigate("/interview", { state: data });
+              navigate(`/interview/${data.interview._id}`, { state: data });
             }}
           >
             Go to Interview

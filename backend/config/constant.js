@@ -162,7 +162,7 @@ For each question and answer pair, provide the following evaluation in JSON form
 - **Relevance**: Rate from 1 to 10 based on how well the answer relates to the question and meets the expectations for the experience level.
 - **Average Rating**: Calculate the average rating based on the scores for clarity, completeness, and relevance.
 
-Ensure that the JSON response is accurate, includes all necessary details, and reflects real-world interview standards for the specified experience level.In the json there should also be the ratings for the languages seperately this should not be included in each one but in the final answer. and also add a comment in the json
+Ensure that the JSON response is accurate, includes all necessary details, and reflects real-world interview standards for the specified experience level.In the json there should also be the ratings for the languages seperately in the languages  object this should not be included in each one but in the final answer .The language object would be in the format name_of_langauage:rating, and also add a comment in the json seperately and improvements also .The response will only return me the final json no other insturction or any thing
 `;
 
   return prompt;
