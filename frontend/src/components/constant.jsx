@@ -250,6 +250,22 @@ export const experienceLevels = [
   },
 ];
 
+export const getDateAndTime = (obj) => {
+  let date = new Date(obj);
+
+  //Used to add a leading zero to maintian consistent formatiing
+  const pad = (num) => num.toString().padStart(2, "0");
+
+  let currentDate = `${pad(date.getDate())}-${pad(
+    date.getMonth() + 1
+  )}-${date.getFullYear()}`;
+  let currentTime = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+    date.getSeconds()
+  )}`;
+
+  return { currentDate, currentTime };
+};
+
 export function getInitials(name) {
   return name
     .split(" ") // Split the string by spaces to separate words

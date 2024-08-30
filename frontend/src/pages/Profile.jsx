@@ -1,22 +1,31 @@
-import Man from "../components/svg/Man";
-import { FaAngleDown } from "react-icons/fa";
-import ProfileTab from "../components/ui/ProfileTab";
-import { useState } from "react";
-import Category from "../components/modal/Category";
+import { lazy, Suspense, useState } from "react";
 import { useSelector } from "react-redux";
+import { FaAngleDown } from "react-icons/fa";
+import Man from "../components/svg/Man";
+import ProfileTab from "../components/ui/ProfileTab";
+import Category from "../components/modal/Category";
 import RoleSelection from "../components/ui/RoleSelection";
 import { getInitials } from "../components/constant";
+
+const ContactUs = lazy(() => import("./ContactUs"));
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [modal, setModal] = useState(false);
+  const [showContactUs, setShowContactUs] = useState(false);
   const interview = useSelector((store) => store.interview);
   const auth = useSelector((store) => store.auth);
 
-  console.log(interview);
   return (
-    <main className="min-h-[100vh] ">
+    <main className="min-h-[100vh]">
+      {/* Contact Us Portal */}
+      {showContactUs && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <ContactUs setOpen={setShowContactUs} />
+        </Suspense>
+      )}
+
       <nav
         className="bg-black flex items-center justify-between px-6 min-h-[8vh] text-white"
         aria-label="Main Navigation"
@@ -28,17 +37,18 @@ const Profile = () => {
         />
         <ul className="flex items-center gap-x-6 justify-center">
           <li>
-            <a href="#contact" className="hover:underline">
+            <button
+              onClick={() => setShowContactUs((prev) => !prev)}
+              className="hover:underline"
+            >
               Contact Us
-            </a>
+            </button>
           </li>
           <li
-            onClick={() => {
-              setModal((prev) => !prev);
-            }}
+            onClick={() => setModal((prev) => !prev)}
             className="flex cursor-pointer relative items-center justify-center gap-x-2"
           >
-            <div className="bg-green-200  text-green-700 font-bold rounded-full p-1 border-green-800 border-2">
+            <div className="bg-green-200 text-green-700 font-bold rounded-full p-1 border-green-800 border-2">
               {getInitials(auth?.user?.name)}
             </div>
             <p className="flex items-center justify-center gap-x-1">
@@ -46,15 +56,15 @@ const Profile = () => {
               <FaAngleDown aria-label="Dropdown Menu" />
             </p>
             {modal && (
-              <ul className="absolute  top-11 min-w-[150px] right-0 bg-gray-100 rounded-lg flex flex-col overflow-hidden   justify-center">
+              <ul className="absolute top-11 min-w-[150px] right-0 bg-gray-100 rounded-lg flex flex-col overflow-hidden justify-center">
                 <li className="text-black h-full lg:hidden hover:bg-gray-200 py-2 min-w-full pl-2">
                   {auth.user.name}
                 </li>
-                <li className="border-b-2 border-gray-300 min-w-full "></li>
+                <li className="border-b-2 border-gray-300 min-w-full"></li>
                 <li className="text-black h-full hover:bg-gray-200 py-2 min-w-full pl-2">
                   Settings
                 </li>
-                <li className="border-b-2 border-gray-300 min-w-full "></li>
+                <li className="border-b-2 border-gray-300 min-w-full"></li>
                 <li className="text-red-500 h-full hover:bg-gray-200 py-2 min-w-full pl-2">
                   Logout
                 </li>
@@ -74,7 +84,7 @@ const Profile = () => {
           <div className="ml-6">
             <h1
               id="dashboard-heading"
-              className="lg:text-2xl text-lg  font-bold"
+              className="lg:text-2xl text-lg font-bold"
             >
               Hi, {auth.user.name}
             </h1>
@@ -86,9 +96,7 @@ const Profile = () => {
           </div>
         </div>
         <button
-          onClick={() => {
-            setOpen(true);
-          }}
+          onClick={() => setOpen(true)}
           className="bg-black lg:flex hidden text-white px-4 py-2 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50"
         >
           Book Interview &gt;

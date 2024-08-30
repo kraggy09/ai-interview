@@ -20,7 +20,7 @@ const ProfileTab = ({ setOpen }) => {
               current === 0 ? "bg-gray-800 text-white" : "text-gray-700"
             } rounded-t-lg p-2`}
           >
-            Requested
+            Completed
           </a>
           <a
             href="#completed"
@@ -29,7 +29,7 @@ const ProfileTab = ({ setOpen }) => {
               current === 1 ? "bg-gray-800 text-white" : "text-gray-700"
             } rounded-t-lg p-2`}
           >
-            Completed
+            Requested
           </a>
           <a
             href="#badges"
@@ -47,8 +47,8 @@ const ProfileTab = ({ setOpen }) => {
         className="flex items-center justify-center gap-y-6 flex-col my-9"
       >
         <Suspense fallback={<div>Loading...</div>}>
-          {current === 0 && <RequestedTab setOpen={setOpen} />}
-          {current === 1 && <CompletedTab />}
+          {current === 1 && <RequestedTab setOpen={setOpen} />}
+          {current === 0 && <CompletedTab setOpen={setOpen} />}
           {current === 2 && <BadgesTab setOpen={setOpen} />}
         </Suspense>
       </div>

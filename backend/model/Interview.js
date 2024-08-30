@@ -35,6 +35,10 @@ const interviewSchema = new Schema(
     improvements: {
       type: String,
     },
+    level: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

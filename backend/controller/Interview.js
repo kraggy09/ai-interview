@@ -42,6 +42,7 @@ export const generateInterview = async (req, res) => {
       user: userId,
       role: role,
       skills: languages,
+      level: level,
     });
 
     console.log("Interview created with ID:", interview._id);
@@ -151,6 +152,30 @@ export const getCompletedInterviews = async (req, res) => {
   const interviews = await Interview.find({
     user: user._id,
     interviewStage: "Completed",
+  }).sort({
+    createdAt: 1,
+  });
+
+  return res.status(200).json({
+    success: true,
+    msg: "User found successfully",
+    interviews,
+  });
+};
+
+export const getOngoingInterview = async (req, res) => {
+  const user = req.user;
+  console.log(user);
+  if (!user) {
+    return res.status(404).json({
+      msg: "User not found",
+      success: false,
+    });
+  }
+
+  const interviews = await Interview.find({
+    user: user._id,
+    interviewStage: "Interviewing",
   }).sort({
     createdAt: 1,
   });
