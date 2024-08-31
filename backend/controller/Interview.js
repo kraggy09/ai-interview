@@ -67,7 +67,8 @@ export const generateInterview = async (req, res) => {
 };
 
 export const evaluateInterview = async (req, res) => {
-  const { role, level, questions, interviewId } = req.body;
+  let { role, level, questions, interviewId } = req.body;
+
   const apiKey = process.env.GEMINI_API_KEY;
 
   const interview = await Interview.findById(interviewId);
@@ -82,6 +83,11 @@ export const evaluateInterview = async (req, res) => {
     return res
       .status(500)
       .json({ error: "API key is missing", success: false });
+  }
+
+  if (!role) {
+    role = interview.role;
+    level = interview.level;
   }
 
   try {
@@ -153,7 +159,7 @@ export const getCompletedInterviews = async (req, res) => {
     user: user._id,
     interviewStage: "Completed",
   }).sort({
-    createdAt: 1,
+    createdAt: -1,
   });
 
   return res.status(200).json({
@@ -177,7 +183,7 @@ export const getOngoingInterview = async (req, res) => {
     user: user._id,
     interviewStage: "Interviewing",
   }).sort({
-    createdAt: 1,
+    createdAt: -1,
   });
 
   return res.status(200).json({
@@ -185,4 +191,46 @@ export const getOngoingInterview = async (req, res) => {
     msg: "User found successfully",
     interviews,
   });
+};
+
+export const getSingleInterview = async (req, res) => {
+  const interviewId = req.params.id;
+  console.log(interviewId);
+
+  try {
+    const interview = await Interview.findById(interviewId);
+    if (!interview) {
+      return res.status(404).json({
+        success: false,
+        msg: "Unable to find the interivew! U are looking for",
+      });
+    }
+    const questions = await Question.find({ interview: interviewId }).sort({
+      createdAt: 1,
+    });
+
+    let question = [];
+    for (let q of questions) {
+      let newObj = {
+        difficulty: q.difficulty,
+        question: q.question,
+        topic: q.topic,
+        type: q.questionType,
+      };
+      question.push(newObj);
+    }
+    return res.status(200).json({
+      success: true,
+      msg: "We have got the interview",
+      data: question,
+      interview,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      msg: "Server error",
+    });
+  }
 };

@@ -1,9 +1,20 @@
 import PropTypes from "prop-types";
 import { getDateAndTime } from "../constant";
+import { useNavigate } from "react-router-dom";
 
 const InterviewCard = ({ interview, state = "Interviewing" }) => {
   console.log(interview);
   const skills = Object.keys(interview.skills);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (state === "Interviewing") {
+      console.log("Interviewing");
+      navigate("/navigator", { state: interview._id });
+    } else {
+      console.log("Completed");
+    }
+  };
 
   return (
     <div className="bg-white shadow-lg min-w-[150px] rounded-md overflow-hidden min-h-[200px]">
@@ -46,7 +57,10 @@ const InterviewCard = ({ interview, state = "Interviewing" }) => {
       </div>
       <div className="flex items-center justify-end mt-6 mr-3">
         {
-          <button className="bg-white border-black border px-2 py-1 text-sm rounded-md hover:bg-black hover:text-white">
+          <button
+            onClick={handleClick}
+            className="bg-white border-black border px-2 py-1 text-sm rounded-md hover:bg-black hover:text-white"
+          >
             {state === "Interviewing" ? "Continue" : "View Report"}
           </button>
         }

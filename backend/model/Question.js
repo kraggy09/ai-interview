@@ -44,6 +44,7 @@ let questionSchema = new mongoose.Schema({
 });
 
 questionSchema.index({ interview: 1 });
+questionSchema.index({ createdAt: 1 });
 
 const Question = mongoose.model("Question", questionSchema);
 export default Question;

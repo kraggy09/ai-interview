@@ -7,6 +7,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { login } from "./store/authSlice";
 import "regenerator-runtime/runtime";
+import Navigator from "./components/ui/Navigator";
 
 // Lazy load the components
 const Home = lazy(() => import("./pages/Home"));
@@ -58,6 +59,14 @@ const App = () => {
             element={
               <AuthWrapper>
                 <Interview />
+              </AuthWrapper>
+            }
+          />
+          <Route
+            path="/navigator"
+            element={
+              <AuthWrapper>
+                <Navigator />
               </AuthWrapper>
             }
           />
