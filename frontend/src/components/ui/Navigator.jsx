@@ -4,22 +4,43 @@ import useFetch from "../hooks/useFetch";
 
 const Navigator = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state;
 
-  console.log(state);
+  // Define URLs based on the type of the state
+  const fetchUrl =
+    state?.type === "Interviewing"
+      ? `${apiUrl}interview/${state.id}`
+      : `${apiUrl}interview/report/${state.id}`;
 
-  const { data } = useFetch(apiUrl + "interview/" + state);
-  const navigate = useNavigate();
-  if (data?.data) {
-    navigate(`/interview/${data.interview._id}`, { state: data });
+  const { data, error, loading } = useFetch(fetchUrl);
+  console.log(data?.data);
+
+  // Conditional navigation based on data availability
+  if (!loading && data) {
+    if (error) {
+      console.error("Error fetching data:", error);
+      // Optionally, handle errors with a user-friendly message or redirect
+    } else {
+      if (state.type === "Interviewing") {
+        navigate(`/interview/${data?.interview?._id}`, { state: data });
+      } else {
+        navigate(`/report/${data?.data?.interview?._id}`, {
+          state: data?.data,
+        });
+      }
+    }
   }
-  console.log(data);
-
-  //   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center min-w-full">
-      <h1 className="loader3"></h1>
+      {loading ? (
+        <h1 className="loader3">Loading...</h1>
+      ) : error ? (
+        <h1>Error loading data</h1>
+      ) : (
+        <h1>Redirecting...</h1>
+      )}
     </div>
   );
 };

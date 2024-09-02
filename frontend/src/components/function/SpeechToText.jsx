@@ -7,11 +7,11 @@ import { getNextQuestion, setAnswers } from "../../store/currentInterview";
 import PropTypes from "prop-types";
 import useFetch from "../hooks/useFetch";
 import { apiUrl } from "../constant";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import ReportCard from "./ReportCard";
+import { useNavigate } from "react-router-dom";
 
 const SpeechToText = ({ startListening }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [answer, setAnswer] = useState("");
   const { data, loading, fetchData } = useFetch(null, null, false); // Initialize with no URL
 
@@ -34,14 +34,6 @@ const SpeechToText = ({ startListening }) => {
       resetTranscript();
     }
   }, [startListening, resetTranscript]);
-  const newData = {
-    role: "Software Engineer",
-    level: "Senior",
-    questions: [
-      { question: "What is your experience with React?" },
-      { question: "How do you handle state management?" },
-    ],
-  };
 
   if (!browserSupportsSpeechRecognition) {
     return <div>Your browser does not support Speech recognition</div>;
@@ -53,15 +45,14 @@ const SpeechToText = ({ startListening }) => {
         <div className="fixed inset-0  z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-lg">
           <h1 className="lg:px-12 px-3 py-6 rounded-lg bg-white">
             Your interview report is ready!!{" "}
-            <PDFDownloadLink
-              className="bg-black text-white px-3 py-2 rounded-lg"
-              document={<ReportCard data={newData} />}
-              fileName="interview-report.pdf"
+            <button
+              onClick={() => {
+                navigate("/profile");
+              }}
+              className="bg-black text-white px-3 py-1"
             >
-              {({ loading }) =>
-                loading ? "Preparing document..." : "Download PDF"
-              }
-            </PDFDownloadLink>
+              Click Here
+            </button>
           </h1>
         </div>
       ) : loading ? (

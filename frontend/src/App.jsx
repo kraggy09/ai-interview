@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { login } from "./store/authSlice";
 import "regenerator-runtime/runtime";
 import Navigator from "./components/ui/Navigator";
+import ReportCard from "./pages/ReportCard";
 
 // Lazy load the components
 const Home = lazy(() => import("./pages/Home"));
@@ -59,6 +60,14 @@ const App = () => {
             element={
               <AuthWrapper>
                 <Interview />
+              </AuthWrapper>
+            }
+          />
+          <Route
+            path="/report/:id"
+            element={
+              <AuthWrapper>
+                <ReportCard />
               </AuthWrapper>
             }
           />

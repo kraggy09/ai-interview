@@ -33,7 +33,7 @@ export const generateInterview = async (req, res) => {
       jsonResponse = JSON.parse(cleanedResponseText);
     } catch (parseError) {
       return res
-        .status(500)
+        .status(400)
         .json({ error: "Failed to parse API response", success: false });
     }
 
@@ -58,7 +58,7 @@ export const generateInterview = async (req, res) => {
     }
 
     return res
-      .status(200)
+      .status(201)
       .json({ data: jsonResponse, success: true, interview });
   } catch (error) {
     console.error("Error in generateInterview:", error.message);
@@ -106,7 +106,7 @@ export const evaluateInterview = async (req, res) => {
       jsonResponse = JSON.parse(cleanedResponseText);
     } catch (parseError) {
       return res
-        .status(500)
+        .status(400)
         .json({ error: "Failed to parse API response", success: false });
     }
     let questionResponse =
@@ -202,7 +202,7 @@ export const getSingleInterview = async (req, res) => {
     if (!interview) {
       return res.status(404).json({
         success: false,
-        msg: "Unable to find the interivew! U are looking for",
+        msg: "Unable to find the interview! You are looking for",
       });
     }
     const questions = await Question.find({ interview: interviewId }).sort({
@@ -231,6 +231,50 @@ export const getSingleInterview = async (req, res) => {
     return res.status(500).json({
       success: false,
       msg: "Server error",
+    });
+  }
+};
+
+export const getInterviewReport = async (req, res) => {
+  const interviewId = req.params.id;
+  console.log(interviewId);
+  if (!interviewId) {
+    return res.status(400).json({
+      msg: "No interview provided",
+      success: false,
+    });
+  }
+
+  try {
+    let interview = await Interview.findById(interviewId);
+    if (!interview) {
+      return res.status(404).json({
+        msg: "No interview found",
+        success: false,
+      });
+    }
+
+    let questions = await Question.find({ interview: interviewId });
+    if (!questions) {
+      return res.status(404).json({
+        success: false,
+        msg: "No questions found for this interview",
+      });
+    }
+    let report = {
+      interview,
+      questions,
+    };
+
+    return res.status(200).json({
+      success: true,
+      data: report,
+      msg: "Successfully found the interview report card",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      msg: error.message || "Server Error",
     });
   }
 };

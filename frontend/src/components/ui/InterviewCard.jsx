@@ -10,9 +10,19 @@ const InterviewCard = ({ interview, state = "Interviewing" }) => {
   const handleClick = () => {
     if (state === "Interviewing") {
       console.log("Interviewing");
-      navigate("/navigator", { state: interview._id });
+      navigate("/navigator", {
+        state: {
+          id: interview._id,
+          type: "Interviewing",
+        },
+      });
     } else {
-      console.log("Completed");
+      navigate("/navigator", {
+        state: {
+          id: interview._id,
+          type: "Report Card",
+        },
+      });
     }
   };
 
