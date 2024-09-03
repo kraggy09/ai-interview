@@ -98,6 +98,13 @@ const SpeechToText = ({ startListening }) => {
             </button>
             <button
               onClick={() => {
+                dispatch(
+                  setAnswers({
+                    quest: questions[currentQuestion]?.question,
+                    ans: answer,
+                  })
+                );
+                setAnswer("");
                 if (currentQuestion === totalQuestion) {
                   console.log("You have reached the last question");
                   SpeechRecognition.stopListening();
@@ -116,12 +123,6 @@ const SpeechToText = ({ startListening }) => {
                     },
                   });
                 } else {
-                  dispatch(
-                    setAnswers({
-                      quest: questions[currentQuestion]?.question,
-                      ans: answer,
-                    })
-                  );
                   dispatch(getNextQuestion());
                 }
               }}

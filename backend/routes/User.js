@@ -10,6 +10,8 @@ import User from "../model/User.js";
 const router = Router();
 
 router.route("/register").post(registerValidationRules(), validate, register);
+router.route("/getUser").get(getUser);
+
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", async (err, user, info) => {
     if (err) {
@@ -31,8 +33,19 @@ router.post("/login", (req, res, next) => {
     });
   })(req, res, next);
 });
-router.route("/getUser").get(getUser);
-
+router.post("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Error logging out" });
+    }
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Error destroying session" });
+      }
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+});
 router.route("/checkAuth").get((req, res) => {
   console.log("Inside Checking of Auth");
 

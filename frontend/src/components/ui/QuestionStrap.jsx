@@ -33,13 +33,19 @@ const QuestionStrap = ({ question }) => {
         </div>
       </div>
       <div className="absolute flex right-5 gap-x-5 bottom-2">
-        <PercentageBox name={"Clarity"} percentage={question.rating.clarity} />
-        <PercentageBox name={"Relev"} percentage={question.rating.relevance} />
+        <PercentageBox
+          name={"Clarity"}
+          percentage={question.rating.clarity * 10}
+        />
+        <PercentageBox
+          name={"Relev"}
+          percentage={question.rating.relevance * 10}
+        />
         <PercentageBox
           name={"Compl"}
-          percentage={question.rating.completeness}
+          percentage={question.rating.completeness * 10}
         />
-        <PercentageBox name={"Avg"} percentage={question.rating.average} />
+        <PercentageBox name={"Avg"} percentage={question.rating.average * 10} />
       </div>
     </div>
   );

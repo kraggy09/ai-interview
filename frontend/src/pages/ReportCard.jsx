@@ -1,54 +1,141 @@
-import { useLocation } from "react-router-dom";
+import domtoimage from "dom-to-image";
+
+import { useLocation, useNavigate } from "react-router-dom";
 import { getDateAndTime } from "../components/constant";
 import ProgressBar from "../components/ui/ProgressBar";
 import QuestionStrap from "../components/ui/QuestionStrap";
+import PercentageBox from "../components/ui/PercentageBox";
+import { FaArrowDown } from "react-icons/fa";
+import { FaAngleLeft } from "react-icons/fa";
 
 const ReportCard = () => {
   const location = useLocation();
   const interview = location.state?.interview;
   const questions = location.state?.questions;
   const skills = Object.keys(interview?.skills || {});
+  const navigate = useNavigate();
 
   const { currentDate, currentTime } = getDateAndTime(
     interview?.updatedAt || ""
   );
 
+  const handleDownload = () => {
+    const node = document.getElementById("reportCardContainer"); // Adjust the selector to your container
+
+    domtoimage
+      .toPng(node, {
+        bgcolor: "#ffffff", // Ensure background color is white
+        height: node.scrollHeight, // Capture full height
+        width: node.scrollWidth, // Capture full width
+      })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = "report-card.png";
+        link.click();
+      })
+      .catch((error) => {
+        console.error("Error capturing screenshot:", error);
+      });
+  };
+
   return (
-    <main className="max-h-full flex flex-col overflow-scroll scrollbar-hide mx-3 lg:px-16 xl:px-36">
-      <header className="text-center my-4">
-        <h1 className="text-lg font-bold bg-white inline-block shadow-xl px-4 py-1 rounded-lg">
-          Report Card for {interview.role}
-        </h1>
-      </header>
+    <>
+      <button
+        onClick={handleDownload}
+        className="absolute rounded-lg z-10 text-sm flex items-center justify-center gap-x-2 top-5 right-2 bg-green-200 px-3 py-2"
+      >
+        <FaArrowDown />
+        <span className="lg:flex hidden">Download</span>
+      </button>
+      <main
+        id="reportCardContainer"
+        className="max-h-full relative flex flex-col overflow-scroll scrollbar-hide mx-3 lg:px-16 xl:px-36"
+      >
+        <button
+          onClick={() => {
+            navigate("/profile");
+          }}
+          className="absolute top-5 left-10"
+        >
+          <FaAngleLeft size={30} />
+        </button>
 
-      <section className="grid gap-x-6 lg:grid-cols-2 rounded-lg my-3">
-        <article className="flex-col flex gap-y-1 rounded-lg overflow-hidden shadow-lg px-3 py-2">
-          <h2 className="text-md font-semibold">Interview Details</h2>
-          <p>Level: {interview.level}</p>
-          <p>Date: {currentDate}</p>
-          <p>Time: {currentTime}</p>
-        </article>
+        <header className="text-center my-4">
+          <h1 className="text-lg font-bold bg-white inline-block shadow-xl px-4 py-1 rounded-lg">
+            Report Card for {interview.role}
+          </h1>
+        </header>
 
-        <article className="rounded-lg overflow-hidden shadow-lg px-3 py-2">
-          <h2 className="font-semibold text-center">Skills</h2>
-          <div className="grid grid-cols-2 lg:grid-cols-3 items-center gap-2">
-            {skills.map((s) => {
-              const percentage = interview.skills[s] * 10;
-              return <ProgressBar key={s} percentage={percentage} skill={s} />;
-            })}
+        <section className="grid gap-x-6 lg:grid-cols-2 rounded-lg my-3">
+          <article className="flex items-center rounded-lg overflow-hidden shadow-lg justify-around">
+            <div className="flex-col flex gap-y-1 px-3 py-2">
+              <h2 className="text-md font-semibold">Interview Details</h2>
+              <p>Level: {interview.level}</p>
+              <p>Date: {currentDate}</p>
+              <p>Time: {currentTime}</p>
+            </div>
+
+            <div id="overallGrade">
+              <PercentageBox
+                name="Overall"
+                percentage={interview.overallGrade * 10}
+              />
+            </div>
+            {interview.overallGrade >= 6 ? (
+              <img
+                src="/selected.jpg"
+                className="w-24 bottom-7 right-7"
+                alt=""
+              />
+            ) : (
+              <img
+                src="/rejected.webp"
+                className="w-24 bottom-7 right-7"
+                alt=""
+              />
+            )}
+          </article>
+
+          <article className="rounded-lg overflow-hidden shadow-lg px-3 py-2">
+            <h2 className="font-semibold text-center">Skills</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-3 items-center gap-2">
+              {skills.map((skill) => {
+                const percentage = interview.skills[skill] * 10;
+                return (
+                  <ProgressBar
+                    key={skill}
+                    percentage={percentage}
+                    skill={skill}
+                  />
+                );
+              })}
+            </div>
+          </article>
+        </section>
+
+        <section>
+          <h2 className="font-semibold my-3 text-xl">Rating</h2>
+          <div className="grid gap-y-6 grid-cols-1">
+            {questions.map((question) => (
+              <QuestionStrap key={question._id} question={question} />
+            ))}
           </div>
-        </article>
-      </section>
-
-      <section>
-        <h2 className="font-semibold">Rating</h2>
-        <div className="grid gap-y-6 grid-cols-1">
-          {questions.map((ques) => (
-            <QuestionStrap key={ques._id} question={ques} />
-          ))}
-        </div>
-      </section>
-    </main>
+        </section>
+        <section className="my-3 mx-auto">
+          <p>
+            Report generated by
+            <span className="bg-black px-2 py-1 mx-2 rounded-md text-white">
+              Intervue
+            </span>
+            Developed with ❤️ by
+            <span className="bg-green-200 px-2 py-1 rounded-md mx-2">
+              Kaif Shaikh
+            </span>
+          </p>
+        </section>
+      </main>
+    </>
   );
 };
 

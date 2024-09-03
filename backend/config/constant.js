@@ -128,7 +128,7 @@ export const generateEvaluationPrompt = (questions, level, role) => {
 
 1. **Ignore code snippets**: This is a voice-based interview that has been transcribed to text. The absence of code snippets should not affect the evaluation or rating.
 2. **Disregard language formality**: Do not penalize the candidate for informal language, the use of filler words like "like," or similar expressions, as these are common in spoken language.
-3. **Ignore grammatical and spelling errors**: Since the answers were converted from voice to text, do not downgrade the evaluation based on grammar or spelling.
+3. **Ignore grammatical and spelling errors**: Since the answers were converted from voice to text, do not downgrade the evaluation based on grammar or spelling mistake, Just ignore this erro.
 4. **Consider experience level**: For candidates with higher experience, answers should be more elaborative and detailed. Penalize if the answers lack depth or thorough explanations for such candidates. For less experienced candidates, it is not necessary for the answers to be as detailed, and their evaluations should reflect their level of expertise.
 
 Questions:

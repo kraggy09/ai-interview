@@ -8,6 +8,7 @@ import {
   setInterviewDetails,
 } from "../../store/interviewSlice";
 import useFetch from "../hooks/useFetch";
+import toast from "react-hot-toast";
 const RoleSelection = () => {
   const interview = useSelector((store) => store.interview);
   const dispatch = useDispatch();
@@ -49,11 +50,24 @@ const RoleSelection = () => {
 
   const handleContinueClick = () => {
     if (pageIndex === 0) {
-      setPageIndex(1); // Move to the second page
+      let selectedLanguages = selectedRole.language.filter(
+        (lang) => lang.selected
+      );
+      console.log(selectedLanguages);
+
+      if (selectedLanguages.length == 0) {
+        toast.error("Please select your  skills");
+        return;
+      }
+      setPageIndex(1);
     } else if (pageIndex === 1) {
       let selectedLanguages =
         selectedRole && selectedRole.language.filter((s) => s.selected);
       console.log(selectedLanguages);
+      if (lvl == null) {
+        toast.error("Pls select your preferred role");
+        return;
+      }
 
       dispatch(
         setInterviewDetails({
@@ -199,7 +213,7 @@ const RoleSelection = () => {
       <aside className="right-0 absolute min-h-full bg-white md:min-w-[70vw] lg:min-w-[45vw] xl:min-w-[35vw] min-w-full">
         {pageIndex === 0
           ? renderFirstPage()
-          : pageIndex == 1
+          : pageIndex === 1
           ? renderSecondPage()
           : renderThirdPage()}
         {(pageIndex === 0 || pageIndex === 1) && (

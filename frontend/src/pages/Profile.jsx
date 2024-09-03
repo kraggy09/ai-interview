@@ -1,11 +1,15 @@
 import { lazy, Suspense, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaAngleDown } from "react-icons/fa";
 import Man from "../components/svg/Man";
 import ProfileTab from "../components/ui/ProfileTab";
 import Category from "../components/modal/Category";
 import RoleSelection from "../components/ui/RoleSelection";
-import { getInitials } from "../components/constant";
+import { apiUrl, getInitials } from "../components/constant";
+import useFetch from "../components/hooks/useFetch";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../store/authSlice";
+import toast from "react-hot-toast";
 
 const ContactUs = lazy(() => import("./ContactUs"));
 
@@ -16,6 +20,35 @@ const Profile = () => {
   const [showContactUs, setShowContactUs] = useState(false);
   const interview = useSelector((store) => store.interview);
   const auth = useSelector((store) => store.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { fetchData, data } = useFetch(null, null, false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (data === null) {
+      // Only proceed if data is not null
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      try {
+        await fetchData(apiUrl + "user/logout", options);
+        dispatch(logout());
+        toast.success("Logout successful");
+        navigate("/");
+      } catch (error) {
+        toast.error("Logout failed");
+      }
+    } else {
+      toast.error("No data available to perform logout");
+    }
+  };
 
   return (
     <main className="min-h-[100vh]">
@@ -65,7 +98,10 @@ const Profile = () => {
                   Settings
                 </li>
                 <li className="border-b-2 border-gray-300 min-w-full"></li>
-                <li className="text-red-500 h-full hover:bg-gray-200 py-2 min-w-full pl-2">
+                <li
+                  onClick={handleSubmit}
+                  className="text-red-500 h-full hover:bg-gray-200 py-2 min-w-full pl-2"
+                >
                   Logout
                 </li>
               </ul>
