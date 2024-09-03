@@ -64,7 +64,10 @@ const Profile = () => {
         aria-label="Main Navigation"
       >
         <img
-          className="h-6"
+          onClick={() => {
+            navigate("/");
+          }}
+          className="h-6 hover:cursor-pointer"
           src="https://dersyb7nfifdf.cloudfront.net/public/assets/intervue-logo-dark.svg"
           alt="Intervue Logo"
         />

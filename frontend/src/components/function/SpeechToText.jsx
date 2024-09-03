@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { getNextQuestion, setAnswers } from "../../store/currentInterview";
+import {
+  clearInterview,
+  getNextQuestion,
+  setAnswers,
+} from "../../store/currentInterview";
 import PropTypes from "prop-types";
 import useFetch from "../hooks/useFetch";
 import { apiUrl } from "../constant";
@@ -47,6 +51,7 @@ const SpeechToText = ({ startListening }) => {
             Your interview report is ready!!{" "}
             <button
               onClick={() => {
+                dispatch(clearInterview());
                 navigate("/profile");
               }}
               className="bg-black text-white px-3 py-1"

@@ -31,10 +31,16 @@ const currentInterviewSlice = createSlice({
       state.totalQuestion = totalQuestion;
       state.interviewId = id;
     },
+    clearInterview: (state) => {
+      state.questions = [];
+      state.currentQuestion = 0;
+      state.totalQuestion = 15;
+      state.interviewId = "";
+    },
   },
 });
 
-export const { getNextQuestion, setAnswers, setQuestions } =
+export const { getNextQuestion, setAnswers, setQuestions, clearInterview } =
   currentInterviewSlice.actions;
 
 export default currentInterviewSlice.reducer;
