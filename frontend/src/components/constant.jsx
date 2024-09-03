@@ -273,4 +273,4 @@ export function getInitials(name) {
     .join(""); // Join the letters together to form the initials
 }
 // export const apiUrl = "http://localhost:8000/api/v1/";
-export const apiUrl = "https://ai-intervue-backend.vercel.app/api/v1";
+export const apiUrl = "https://ai-intervue-backend.vercel.app/api/v1/";
