@@ -53,6 +53,7 @@ const Login = () => {
       toast.success("Login success!");
       console.log("Navigating ");
       console.log(data, "Data");
+      localStorage.setItem("token", data.token);
 
       dispatchR(login(data.user));
     } else if (error) {

@@ -37,7 +37,7 @@ export const generateInterview = async (req, res) => {
         .json({ error: "Failed to parse API response", success: false });
     }
 
-    const userId = req.user._id;
+    const userId = req.userId;
     const interview = await Interview.create({
       user: userId,
       role: role,
@@ -146,9 +146,9 @@ export const evaluateInterview = async (req, res) => {
 };
 
 export const getCompletedInterviews = async (req, res) => {
-  const user = req.user;
-  console.log(user);
-  if (!user) {
+  const userId = req.userId;
+  console.log(userId);
+  if (!userId) {
     return res.status(404).json({
       msg: "User not found",
       success: false,
@@ -156,7 +156,7 @@ export const getCompletedInterviews = async (req, res) => {
   }
 
   const interviews = await Interview.find({
-    user: user._id,
+    user: userId,
     interviewStage: "Completed",
   }).sort({
     createdAt: -1,
@@ -170,9 +170,9 @@ export const getCompletedInterviews = async (req, res) => {
 };
 
 export const getOngoingInterview = async (req, res) => {
-  const user = req.user;
-  console.log(user);
-  if (!user) {
+  const userId = req.userId;
+  console.log(userId);
+  if (!userId) {
     return res.status(404).json({
       msg: "User not found",
       success: false,
@@ -180,7 +180,7 @@ export const getOngoingInterview = async (req, res) => {
   }
 
   const interviews = await Interview.find({
-    user: user._id,
+    user: userId,
     interviewStage: "Interviewing",
   }).sort({
     createdAt: -1,

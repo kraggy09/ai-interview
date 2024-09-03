@@ -5,8 +5,8 @@ import Man from "../components/svg/Man";
 import ProfileTab from "../components/ui/ProfileTab";
 import Category from "../components/modal/Category";
 import RoleSelection from "../components/ui/RoleSelection";
-import { apiUrl, getInitials } from "../components/constant";
-import useFetch from "../components/hooks/useFetch";
+import { getInitials } from "../components/constant";
+
 import { useNavigate } from "react-router-dom";
 import { logout } from "../store/authSlice";
 import toast from "react-hot-toast";
@@ -22,31 +22,25 @@ const Profile = () => {
   const auth = useSelector((store) => store.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const { fetchData, data } = useFetch(null, null, false);
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (data === null) {
-      // Only proceed if data is not null
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
+    // Get the token from localStorage
+    const token = localStorage.getItem("token");
 
-      try {
-        await fetchData(apiUrl + "user/logout", options);
-        dispatch(logout());
-        toast.success("Logout successful");
-        navigate("/");
-      } catch (error) {
-        toast.error("Logout failed");
-      }
+    if (!token) {
+      // If no token is found, show an error
+      toast.error("No token found. Please login again.");
     } else {
-      toast.error("No data available to perform logout");
+      // If token is found, remove it from localStorage
+      localStorage.removeItem("token");
+
+      // Dispatch the logout action
+      dispatch(logout());
+
+      // Show success message and navigate
+      toast.success("Logout successful");
+      navigate("/");
     }
   };
 

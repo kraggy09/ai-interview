@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import User from "../model/User.js";
+import { generateToken } from "../token/generateToken.js";
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -26,10 +28,50 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
+  console.log("Logging in...");
 
-  const user = await User.findOne({ email });
-  if (!user || !(await user.comparePassword(password))) {
-    return res.status(401).send("Invalid credentials");
+  try {
+    // Finding the user by email
+    const user = await User.findOne({ email: email });
+
+    // If the user is not found
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        msg: "User not found. Kindly check your email.",
+      });
+    }
+
+    console.log(user);
+
+    // Use the instance method to compare passwords
+    const isPasswordCorrect = await user.comparePassword(password);
+
+    if (!isPasswordCorrect) {
+      return res.status(401).json({
+        success: false,
+        msg: "Incorrect password. Please try again.",
+      });
+    }
+
+    // Generate a token after a successful login
+    let token = await generateToken(user._id, res);
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
+
+    // Send the response back to the user
+    return res.status(200).json({
+      success: true,
+      msg: "User login successful",
+      user: userWithoutPassword,
+      token,
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({
+      success: false,
+      msg: "Internal server error",
+    });
   }
 };
 
@@ -54,5 +96,23 @@ export const getUser = async (req, res) => {
       success: true,
       sessionData,
     });
+  });
+};
+
+export const checkAuth = async (req, res) => {
+  let userId = req.userId;
+  console.log(userId);
+  userId = new mongoose.Types.ObjectId(userId);
+  let user = await User.findById(userId).select("-password");
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      msg: "User not found",
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    user,
+    msg: "Login success",
   });
 };

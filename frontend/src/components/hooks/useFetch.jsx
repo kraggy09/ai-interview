@@ -9,17 +9,36 @@ const useFetch = (url = null, options = null, autoFetch = true) => {
   const fetchData = useCallback(
     async (fetchUrl = url, fetchOptions = options) => {
       setLoading(true);
+
+      // Retrieve token from localStorage
+      const token = localStorage.getItem("token");
+
       try {
         let response;
+
+        // Prepare the request configuration
         const config = {
-          headers: fetchOptions?.headers || {},
+          headers: {
+            ...fetchOptions?.headers, // Merge any custom headers passed in options
+          },
           withCredentials: true,
         };
 
+        // Prepare the request data by adding the token to the body
+        let data = {
+          ...fetchOptions?.data, // Include any existing data from fetchOptions
+          token, // Add the token to the data body
+        };
+
+        // Choose the request method (POST or GET)
         if (fetchOptions && fetchOptions.method === "POST") {
-          response = await axios.post(fetchUrl, fetchOptions.data, config);
+          response = await axios.post(fetchUrl, data, config);
         } else {
-          response = await axios.get(fetchUrl, config);
+          // For GET requests, we still send the token in the data object
+          response = await axios.get(fetchUrl, {
+            ...config,
+            params: data, // Add the token to GET requests as query params
+          });
         }
 
         setData(response.data);
@@ -27,7 +46,6 @@ const useFetch = (url = null, options = null, autoFetch = true) => {
         console.log(err);
 
         let error = err?.response?.data?.msg || err.message;
-
         setError(error);
       } finally {
         setLoading(false);

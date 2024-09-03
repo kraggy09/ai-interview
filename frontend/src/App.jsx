@@ -20,18 +20,29 @@ const Interview = lazy(() => import("./pages/Interview"));
 const App = () => {
   const dispatch = useDispatch();
   const checkAuth = async () => {
-    let res;
+    const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+
+    if (!token) {
+      toast.error("No token found, please login again.");
+      return; // If no token, stop further execution
+    }
+
     try {
-      res = await axios.get(apiUrl + "/user/checkAuth", {
-        withCredentials: true,
-      });
-      console.log(res.data);
+      const res = await axios.post(
+        apiUrl + "/user/checkAuth",
+        { token }, // Include the token in the request body
+        {
+          withCredentials: true, // Include credentials if needed (cookies, etc.)
+        }
+      );
+
       if (res.data.success) {
         dispatch(login(res.data.user));
         toast.success(res.data.msg);
       }
     } catch (error) {
-      // console.log(error);
+      toast.error("Please re-login.");
+      console.log(error);
     }
   };
 
