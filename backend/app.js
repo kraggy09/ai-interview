@@ -20,7 +20,7 @@ dotenv.config({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 const corsOptions = {
-  origin: "http://localhost:5173", // Your frontend origin
+  origin: "https://ai-interview-bn6o.onrender.com", // Your frontend origin
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
 
