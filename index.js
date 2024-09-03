@@ -1,9 +1,16 @@
-import app from "./app.js";
+import app from "./backend/app.js";
 
 app.get("/hello", (req, res) => {
   return res.status(200).json({
     success: true,
     msg: "Hello and welcome to the world of AI Intervue",
+  });
+});
+
+app.get("/", (req, res) => {
+  return res.status(200).json({
+    success: true,
+    msg: "hello from expressjs",
   });
 });
 
