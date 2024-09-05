@@ -51,7 +51,7 @@ const App = () => {
 
   useEffect(() => {
     checkAuth();
-  }, []); // Add dependency array to avoid repeated calls
+  }); // Add dependency array to avoid repeated calls
 
   return (
     <>
