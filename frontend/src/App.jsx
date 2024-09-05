@@ -19,17 +19,18 @@ const Interview = lazy(() => import("./pages/Interview"));
 
 const App = () => {
   const dispatch = useDispatch();
+
   const checkAuth = async () => {
     const token = localStorage.getItem("token"); // Retrieve the token from localStorage
 
     if (!token) {
-      toast.error("No token found, please login again.");
+      // toast.error("No token found, please login again.");
       return; // If no token, stop further execution
     }
 
     try {
       const res = await axios.post(
-        apiUrl + "user/checkAuth",
+        `${apiUrl}user/checkAuth`, // Ensure apiUrl is properly defined
         { token }, // Include the token in the request body
         {
           withCredentials: true, // Include credentials if needed (cookies, etc.)
@@ -39,16 +40,18 @@ const App = () => {
       if (res.data.success) {
         dispatch(login(res.data.user));
         toast.success(res.data.msg);
+      } else {
+        toast.error("Authentication failed. Please login again.");
       }
     } catch (error) {
       toast.error("Please re-login.");
-      console.log(error);
+      console.error("Error during authentication check:", error);
     }
   };
 
   useEffect(() => {
     checkAuth();
-  });
+  }, []); // Add dependency array to avoid repeated calls
 
   return (
     <>
