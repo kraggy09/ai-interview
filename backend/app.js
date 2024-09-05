@@ -13,21 +13,23 @@ dotenv.config({
 });
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-const corsOptions = {
-  origin: "https://ai-intervue.vercel.app", // Your frontend origin
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-};
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://ai-intervue.vercel.app",
+];
 
-app.use(cors(corsOptions));
-
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://ai-intervue.vercel.app"); // update to match the domain you will make the request from
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 const uri = process.env.MONGO_URI;
 
