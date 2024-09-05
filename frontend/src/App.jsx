@@ -29,7 +29,7 @@ const App = () => {
 
     try {
       const res = await axios.post(
-        apiUrl + "/user/checkAuth",
+        apiUrl + "user/checkAuth",
         { token }, // Include the token in the request body
         {
           withCredentials: true, // Include credentials if needed (cookies, etc.)
