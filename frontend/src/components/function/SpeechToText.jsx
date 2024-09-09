@@ -12,6 +12,7 @@ import PropTypes from "prop-types";
 import useFetch from "../hooks/useFetch";
 import { apiUrl } from "../constant";
 import { useNavigate } from "react-router-dom";
+import { clearInterviewDetails } from "../../store/interviewSlice";
 
 const SpeechToText = ({ startListening }) => {
   const dispatch = useDispatch();
@@ -48,11 +49,11 @@ const SpeechToText = ({ startListening }) => {
       {data ? (
         <div className="fixed inset-0  z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-lg">
           <h1 className="lg:px-12 px-3 py-6 rounded-lg bg-white">
-            Your interview report will be ready in few minutes and you can check
-            it in the completed tab!!{" "}
+            Your interview report is ready!!{" "}
             <button
               onClick={() => {
                 dispatch(clearInterview());
+                dispatch(clearInterviewDetails());
                 navigate("/profile");
               }}
               className="bg-black text-white px-3 py-1"
