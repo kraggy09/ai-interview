@@ -69,46 +69,70 @@ export const generateInterview = async (req, res) => {
 export const evaluateInterview = async (req, res) => {
   let { role, level, questions, interviewId } = req.body;
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  console.log("Received interview for evaluation");
+  let interview = await Interview.findByIdAndUpdate(interviewId, {
+    interviewStage: "Evaluating",
+  });
 
-  const interview = await Interview.findById(interviewId);
   if (!interview) {
     return res.status(404).json({
-      msg: "Interview not found for evaluation",
       success: false,
+      msg: "Unable to evaluate your interview",
     });
   }
+  // Respond immediately to the client
+  res.status(202).json({
+    msg: "Interview is being evaluated, please check back later.",
+    success: true,
+  });
 
-  if (!apiKey) {
-    return res
-      .status(500)
-      .json({ error: "API key is missing", success: false });
-  }
+  // Start background processing
+  processInterviewEvaluation(role, level, questions, interviewId);
+};
 
-  if (!role) {
-    role = interview.role;
-    level = interview.level;
-  }
+// Function to process interview evaluation in the background
+const processInterviewEvaluation = async (
+  role,
+  level,
+  questions,
+  interviewId
+) => {
+  const apiKey = process.env.GEMINI_API_KEY;
 
   try {
-    const prompt = generateEvaluationPrompt(questions, level, role);
+    const interview = await Interview.findById(interviewId);
+    if (!interview) {
+      console.error(`Interview with ID ${interviewId} not found`);
+      return;
+    }
 
+    if (!apiKey) {
+      console.error("API key is missing");
+      return;
+    }
+
+    if (!role) {
+      role = interview.role;
+      level = interview.level;
+    }
+
+    const prompt = generateEvaluationPrompt(questions, level, role);
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(prompt);
 
     const responseText = await result.response.text();
-    console.log("Evaluation Response Text:", responseText);
+    // console.log("Evaluation Response Text:", responseText);
     const cleanedResponseText = responseText.trim().slice(7, -3);
 
     let jsonResponse;
     try {
       jsonResponse = JSON.parse(cleanedResponseText);
     } catch (parseError) {
-      return res
-        .status(400)
-        .json({ error: "Failed to parse API response", success: false });
+      console.error("Failed to parse API response:", parseError);
+      return;
     }
+
     let questionResponse =
       jsonResponse.questions_and_answers || jsonResponse.questions;
     let avgRating = 0;
@@ -116,7 +140,7 @@ export const evaluateInterview = async (req, res) => {
       let ans = questions[i].ans;
       let saved = questionResponse[i];
       avgRating += saved.rating.average;
-      let savedQuestion = await Question.findOneAndUpdate(
+      await Question.findOneAndUpdate(
         {
           question: saved.question,
         },
@@ -127,21 +151,18 @@ export const evaluateInterview = async (req, res) => {
         }
       );
     }
-    avgRating /= 15;
+    avgRating /= questionResponse.length;
+
     let finalInterview = await Interview.findByIdAndUpdate(interviewId, {
       interviewStage: "Completed",
       skills: jsonResponse.languages,
       comment: jsonResponse.comment,
       overallGrade: avgRating,
     });
-    return res.status(200).json({
-      msg: "Successfully Evaluated the candidate",
-      success: true,
-      data: finalInterview,
-    });
+
+    console.log("Interview evaluation completed successfully");
   } catch (error) {
-    console.error("Error in evaluateInterview:", error.message);
-    return res.status(500).json({ error: error.message, success: false });
+    console.error("Error in processing interview evaluation:", error.message);
   }
 };
 export const getCompletedInterviews = async (req, res) => {
