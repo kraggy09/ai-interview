@@ -56,7 +56,7 @@ const ReportCard = () => {
           onClick={() => {
             navigate("/profile");
           }}
-          className="absolute top-5 left-10"
+          className="absolute top-5 lg:left-10"
         >
           <FaAngleLeft size={30} />
         </button>

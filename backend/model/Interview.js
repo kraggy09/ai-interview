@@ -29,7 +29,7 @@ const interviewSchema = new Schema(
     },
     interviewStage: {
       type: String,
-      enum: ["Interviewing", "Completed"],
+      enum: ["Interviewing", "Completed", "Evaluating"],
       default: "Interviewing", // Set default to 'Interviewing' if desired
     },
     improvements: {

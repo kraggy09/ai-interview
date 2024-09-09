@@ -48,7 +48,8 @@ const SpeechToText = ({ startListening }) => {
       {data ? (
         <div className="fixed inset-0  z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-lg">
           <h1 className="lg:px-12 px-3 py-6 rounded-lg bg-white">
-            Your interview report is ready!!{" "}
+            Your interview report will be ready in few minutes and you can check
+            it in the completed tab!!{" "}
             <button
               onClick={() => {
                 dispatch(clearInterview());
