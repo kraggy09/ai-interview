@@ -2,8 +2,9 @@ import { useSelector } from "react-redux";
 import TextToSpeech from "../function/TexttoSpeech";
 import SpeechToText from "../function/SpeechToText";
 import { useState } from "react";
+import PropTypes from "prop-types";
 
-export const CurrentQuestion = () => {
+export const CurrentQuestion = ({ setList }) => {
   const { questions, currentQuestion } = useSelector(
     (store) => store.currentInterview
   );
@@ -22,6 +23,7 @@ export const CurrentQuestion = () => {
       <TextToSpeech
         setStartListening={setStartListening}
         question={currQues?.question}
+        setList={setList}
       />
       <h1 className="font-bold">
         {"Q" + (currentQuestion + 1) + ")  "}
@@ -43,7 +45,11 @@ export const CurrentQuestion = () => {
           {topicText}
         </span>
       </div>
-      <SpeechToText startListening={startListening} />
+      <SpeechToText startListening={startListening} setList={setList} />
     </div>
   );
+};
+
+CurrentQuestion.propTypes = {
+  setList: PropTypes.func.isRequired,
 };

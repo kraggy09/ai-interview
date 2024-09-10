@@ -14,14 +14,13 @@ import { apiUrl } from "../constant";
 import { useNavigate } from "react-router-dom";
 import { clearInterviewDetails } from "../../store/interviewSlice";
 
-const SpeechToText = ({ startListening }) => {
+const SpeechToText = ({ startListening, setList }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [answer, setAnswer] = useState("");
   const { data, loading, fetchData } = useFetch(null, null, false); // Initialize with no URL
 
   const interview = useSelector((store) => store.interview);
-
   const { questions, currentQuestion, totalQuestion, interviewId } =
     useSelector((store) => store.currentInterview);
   const { transcript, resetTranscript, browserSupportsSpeechRecognition } =
@@ -40,6 +39,14 @@ const SpeechToText = ({ startListening }) => {
     }
   }, [startListening, resetTranscript]);
 
+  // Cleanup: Stop listening when the component unmounts
+  useEffect(() => {
+    return () => {
+      SpeechRecognition.stopListening();
+      resetTranscript();
+    };
+  }, []);
+
   if (!browserSupportsSpeechRecognition) {
     return <div>Your browser does not support Speech recognition</div>;
   }
@@ -47,7 +54,7 @@ const SpeechToText = ({ startListening }) => {
   return (
     <>
       {data ? (
-        <div className="fixed inset-0  z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-lg">
           <h1 className="lg:px-12 px-3 py-6 rounded-lg bg-white">
             Your interview report is ready!!{" "}
             <button
@@ -63,7 +70,7 @@ const SpeechToText = ({ startListening }) => {
           </h1>
         </div>
       ) : loading ? (
-        <div className="fixed inset-0  z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md">
           <div className="bg-white inline-block rounded-lg px-4 py-2">
             <h1 className=" loader2"></h1>
           </div>
@@ -114,6 +121,7 @@ const SpeechToText = ({ startListening }) => {
                 setAnswer("");
                 if (currentQuestion === totalQuestion) {
                   console.log("You have reached the last question");
+
                   SpeechRecognition.stopListening();
 
                   const data = {
@@ -131,6 +139,7 @@ const SpeechToText = ({ startListening }) => {
                   });
                 } else {
                   dispatch(getNextQuestion());
+                  setList(true);
                 }
               }}
               className="text-white bg-black px-4 py-2 rounded-md font-bold"
@@ -147,6 +156,7 @@ const SpeechToText = ({ startListening }) => {
 
 SpeechToText.propTypes = {
   startListening: PropTypes.bool.isRequired,
+  setList: PropTypes.func.isRequired,
 };
 
 export default SpeechToText;

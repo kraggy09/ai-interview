@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import toast from "react-hot-toast";
 
-const TextToSpeech = ({ question, setStartListening }) => {
+const TextToSpeech = ({ question, setStartListening, setList }) => {
   const [voice, setVoice] = useState(null);
   const [voicesLoaded, setVoicesLoaded] = useState(false);
 
@@ -28,7 +29,9 @@ const TextToSpeech = ({ question, setStartListening }) => {
 
         // Set the `onend` event listener
         utterance.onend = () => {
-          setStartListening(true); // Set `setStartListening` to true when speech ends
+          setStartListening(true);
+          setList(false);
+          toast.success("Start Speaking"); // Set `setStartListening` to true when speech ends
         };
 
         window.speechSynthesis.speak(utterance);
@@ -67,12 +70,13 @@ const TextToSpeech = ({ question, setStartListening }) => {
     };
   }, [question, voice, voicesLoaded, setStartListening]);
 
-  return <div>I am also here</div>;
+  return <div></div>;
 };
 
 TextToSpeech.propTypes = {
   question: PropTypes.string,
   setStartListening: PropTypes.func.isRequired,
+  setList: PropTypes.func.isRequired,
 };
 
 export default TextToSpeech;
