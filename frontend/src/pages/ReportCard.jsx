@@ -79,7 +79,11 @@ const ReportCard = () => {
             <div id="overallGrade">
               <PercentageBox
                 name="Overall"
-                percentage={interview.overallGrade * 10}
+                percentage={
+                  (interview.overallGrade * 10) % 1 != 0
+                    ? (interview.overallGrade * 10).toFixed(2)
+                    : interview.overallGrade * 10
+                }
               />
             </div>
             {interview.overallGrade >= 6 ? (

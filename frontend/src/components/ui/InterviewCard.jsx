@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const InterviewCard = ({ interview, state = "Interviewing" }) => {
   console.log(interview);
-  const skills = Object.keys(interview.skills);
+  const skills = Object.keys(interview?.skills);
   const navigate = useNavigate();
 
   const handleClick = () => {

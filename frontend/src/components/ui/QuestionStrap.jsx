@@ -22,13 +22,13 @@ const QuestionStrap = ({ question }) => {
             <span className="bg-green-300 text-green-800 pl-2 pr-1 mr-4 rounded-lg">
               Positive:
             </span>
-            {question?.feedback?.positive}
+            {question?.feedback?.positive ?? "N/A"}
           </p>
           <p id="neg">
             <span className="bg-red-300 text-red-800 pl-2 pr-1 mr-4  rounded-lg">
               Negative:
             </span>
-            {question?.feedback?.negative}
+            {question?.feedback?.negative ?? "N/A"}
           </p>
         </div>
       </div>
